@@ -72,16 +72,13 @@ if (CMAKE_COMPILER_IS_GNUCC)
 	add_definitions(
 		-Wall
 		-Wpointer-arith
-		-Wstrict-prototypes
-		-Wmissing-prototypes
 		-Wmissing-declarations
-		-Wnested-externs
 		-fno-strict-aliasing
-		-Wbad-function-cast
 		#-Wold-style-definition
 		#-Wdeclaration-after-statement
         )
-endif (CMAKE_COMPILER_IS_GNUCC)
+	set (CMAKE_C_FLAGS "-Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Wbad-function-cast ${CMAKE_CXX_FLAGS}")
+endif ()
 
 if (WIN32)
 	# Nobody likes to include windows.h:
