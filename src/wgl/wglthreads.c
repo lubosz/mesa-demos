@@ -430,7 +430,7 @@ create_window(struct winthread *wt, HGLRC shareCtx)
    int ypos = (wt->Index / 8) * (width + 20);
    HWND win;
    HDC hdc;
-   PIXELFORMATDESCRIPTOR pfd = {0};
+   PIXELFORMATDESCRIPTOR pfd;
    int visinfo;
    HGLRC ctx;
 
@@ -463,6 +463,7 @@ create_window(struct winthread *wt, HGLRC shareCtx)
       Error("Couldn't obtain HDC");
    }
 
+   memset(&pfd, 0, sizeof(pfd));
    pfd.cColorBits = 24;
    pfd.cDepthBits = 24;
    pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;

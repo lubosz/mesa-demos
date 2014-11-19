@@ -123,6 +123,7 @@ print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
       return;
    }
 
+   memset(&pfd, 0, sizeof(pfd));
    pfd.cColorBits = 3;
    pfd.cRedBits = 1;
    pfd.cGreenBits = 1;

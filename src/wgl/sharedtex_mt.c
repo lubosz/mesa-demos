@@ -118,7 +118,7 @@ initMainthread(void)
 {
    WNDCLASS wc = {0};
    HWND win;
-   PIXELFORMATDESCRIPTOR pfd = {0};
+   PIXELFORMATDESCRIPTOR pfd;
    int visinfo;
 
    wc.lpfnWndProc = WndProc;
@@ -147,6 +147,7 @@ initMainthread(void)
       Error("Couldn't obtain HDC");
    }
 
+   memset(&pfd, 0, sizeof(pfd));
    pfd.cColorBits = 24;
    pfd.cDepthBits = 24;
    pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
@@ -405,7 +406,7 @@ threadRunner (void *arg)
 {
    struct thread_init_arg *tia = (struct thread_init_arg *) arg;
    struct window *win;
-   PIXELFORMATDESCRIPTOR pfd = {0};
+   PIXELFORMATDESCRIPTOR pfd;
    int visinfo;
 
    win = &Windows[tia->id];
@@ -419,6 +420,7 @@ threadRunner (void *arg)
    if(tia->id > 0)
       WaitForSingleObject(Windows[tia->id - 1].hEventInitialised, INFINITE);
 
+   memset(&pfd, 0, sizeof(pfd));
    pfd.cColorBits = 24;
    pfd.cDepthBits = 24;
    pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL;
