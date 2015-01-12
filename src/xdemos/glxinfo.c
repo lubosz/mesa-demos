@@ -342,6 +342,53 @@ choose_xvisinfo(Display *dpy, int scrnum)
 }
 
 
+static void
+query_renderer(void)
+{
+#ifdef GLX_MESA_query_renderer
+    PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC queryInteger;
+    PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC queryString;
+    unsigned int v[3];
+
+    queryInteger = (PFNGLXQUERYCURRENTRENDERERINTEGERMESAPROC)
+	glXGetProcAddressARB((const GLubyte *)
+			     "glXQueryCurrentRendererIntegerMESA");
+    queryString = (PFNGLXQUERYCURRENTRENDERERSTRINGMESAPROC)
+	glXGetProcAddressARB((const GLubyte *)
+			     "glXQueryCurrentRendererStringMESA");
+
+    printf("Extended renderer info (GLX_MESA_query_renderer):\n");
+    queryInteger(GLX_RENDERER_VENDOR_ID_MESA, v);
+    printf("    Vendor: %s (0x%x)\n",
+	   queryString(GLX_RENDERER_VENDOR_ID_MESA), *v);
+    queryInteger(GLX_RENDERER_DEVICE_ID_MESA, v);
+    printf("    Device: %s (0x%x)\n",
+	   queryString(GLX_RENDERER_DEVICE_ID_MESA), *v);
+    queryInteger(GLX_RENDERER_VERSION_MESA, v);
+    printf("    Version: %d.%d.%d\n", v[0], v[1], v[2]);
+    queryInteger(GLX_RENDERER_ACCELERATED_MESA, v);
+    printf("    Accelerated: %s\n", *v ? "yes" : "no");
+    queryInteger(GLX_RENDERER_VIDEO_MEMORY_MESA, v);
+    printf("    Video memory: %dMB\n", *v);
+    queryInteger(GLX_RENDERER_UNIFIED_MEMORY_ARCHITECTURE_MESA, v);
+    printf("    Unified memory: %s\n", *v ? "yes" : "no");
+    queryInteger(GLX_RENDERER_PREFERRED_PROFILE_MESA, v);
+    printf("    Preferred profile: %s (0x%x)\n",
+	   *v == GLX_CONTEXT_CORE_PROFILE_BIT_ARB ? "core" :
+	   *v == GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB ? "compat" :
+	   "unknown", *v);
+    queryInteger(GLX_RENDERER_OPENGL_CORE_PROFILE_VERSION_MESA, v);
+    printf("    Max core profile version: %d.%d\n", v[0], v[1]);
+    queryInteger(GLX_RENDERER_OPENGL_COMPATIBILITY_PROFILE_VERSION_MESA, v);
+    printf("    Max compat profile version: %d.%d\n", v[0], v[1]);
+    queryInteger(GLX_RENDERER_OPENGL_ES_PROFILE_VERSION_MESA, v);
+    printf("    Max GLES1 profile version: %d.%d\n", v[0], v[1]);
+    queryInteger(GLX_RENDERER_OPENGL_ES2_PROFILE_VERSION_MESA, v);
+    printf("    Max GLES[23] profile version: %d.%d\n", v[0], v[1]);
+#endif
+}
+
+
 static Bool
 print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
                   Bool coreProfile, Bool es2Profile, Bool limits,
@@ -493,6 +540,8 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
          printf("GLX version: %u.%u\n", glxVersionMajor, glxVersionMinor);
          printf("GLX extensions:\n");
          print_extension_list(glxExtensions, singleLine);
+         if (strstr(glxExtensions, "GLX_MESA_query_renderer"))
+	    query_renderer();
          printf("OpenGL vendor string: %s\n", glVendor);
          printf("OpenGL renderer string: %s\n", glRenderer);
       } else
