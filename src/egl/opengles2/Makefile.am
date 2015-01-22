@@ -36,10 +36,13 @@ AM_LDFLAGS = \
 if HAVE_EGL
 if HAVE_GLESV2
 bin_PROGRAMS = \
+	es2gears_screen
+if HAVE_X11
+bin_PROGRAMS += \
 	es2_info \
-	es2gears_screen \
 	es2gears_x11 \
 	es2tri
+endif
 if HAVE_WAYLAND
 bin_PROGRAMS += es2gears_wayland
 endif
