@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <GL/glew.h> // just for GL_ALIASED_LINE_WIDTH_RANGE
 #include "glut_wrap.h"
 
 
