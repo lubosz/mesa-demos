@@ -103,6 +103,7 @@ noinst_PROGRAMS = \
 	jkrahntest \
 	lineclip \
 	linehacks \
+	line-sample \
 	manytex \
 	mapbufrange \
 	minmag \

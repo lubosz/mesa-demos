@@ -73,6 +73,7 @@ set (targets
 	invert
 	lineclip
 	linehacks
+	line-sample
 	manytex
 	mapbufrange
 	minmag
