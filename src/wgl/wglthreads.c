@@ -56,8 +56,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma comment(lib, "opengl32.lib")
-
 
 /*
  * Each window/thread/context:

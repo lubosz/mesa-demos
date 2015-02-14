@@ -36,8 +36,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma comment(lib, "opengl32.lib")
-
 struct thread_init_arg {
    int id;
 };
