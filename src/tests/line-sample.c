@@ -60,8 +60,8 @@ draw_line_sample(GLboolean smooth, GLboolean stipple, GLfloat width)
    glEnd();
 
    /* circle */
-   glBegin(GL_LINE_LOOP);
-   for (i = 0; i < 360; i += 10) {
+   glBegin(GL_LINE_STRIP);
+   for (i = 0; i <= 360; i += 10) {
       float x = r2 * cos(i * M_PI / 180.0);
       float y = r2 * sin(i * M_PI / 180.0);
 
@@ -70,11 +70,12 @@ draw_line_sample(GLboolean smooth, GLboolean stipple, GLfloat width)
    glEnd();
 
    /* box */
-   glBegin(GL_LINE_LOOP);
+   glBegin(GL_LINE_STRIP);
    glVertex2f(-r3, -r3);
    glVertex2f( r3, -r3);
    glVertex2f( r3,  r3);
    glVertex2f(-r3,  r3);
+   glVertex2f(-r3, -r3);
    glEnd();
 }
 
