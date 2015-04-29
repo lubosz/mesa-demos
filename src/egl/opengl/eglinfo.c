@@ -162,9 +162,12 @@ PrintExtensions(EGLDisplay d)
    const char *extensions, *p, *end, *next;
    int column;
 
-   printf("EGL extensions string:\n");
+   puts(d == EGL_NO_DISPLAY ? "EGL client extensions string:" :
+                              "EGL extensions string:");
 
    extensions = eglQueryString(d, EGL_EXTENSIONS);
+   if (!extensions)
+      return;
 
    column = 0;
    end = extensions + strlen(extensions);
@@ -212,6 +215,7 @@ main(int argc, char *argv[])
 #endif
 
    PrintExtensions(d);
+   PrintExtensions(EGL_NO_DISPLAY);
 
    PrintConfigs(d);
 
