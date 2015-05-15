@@ -80,7 +80,7 @@ WndProc(HWND hWnd,
 
 static void
 print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
-                  GLboolean coreProfile)
+                  GLboolean coreProfile, InfoMode mode)
 {
    WNDCLASS wc;
    HWND win;
@@ -253,7 +253,7 @@ print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
        */
 
       if (!coreProfile) {
-         if (wglExtensions) {
+         if (wglExtensions && mode != Brief) {
             printf("WGL extensions:\n");
             print_extension_list(wglExtensions, singleLine);
          }
@@ -286,8 +286,11 @@ print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
       }
 #endif
 
-      printf("%s extensions:\n", oglString);
-      print_extension_list(glExtensions, singleLine);
+      if (mode != Brief) {
+         printf("%s extensions:\n", oglString);
+         print_extension_list(glExtensions, singleLine);
+      }
+
       if (limits) {
          print_limits(glExtensions, oglString, version, &extfuncs);
       }
@@ -643,11 +646,13 @@ main(int argc, char *argv[])
       printf("%d\n", b);
    }
    else {
-      print_screen_info(hdc, opts.limits, opts.singleLine, GL_FALSE);
+      print_screen_info(hdc, opts.limits, opts.singleLine, GL_FALSE, opts.mode);
       printf("\n");
-      print_screen_info(hdc, opts.limits, opts.singleLine, GL_TRUE);
+      print_screen_info(hdc, opts.limits, opts.singleLine, GL_TRUE, opts.mode);
       printf("\n");
-      print_visual_info(hdc, opts.mode);
+      if (opts.mode != Brief) {
+         print_visual_info(hdc, opts.mode);
+      }
    }
 
    return 0;

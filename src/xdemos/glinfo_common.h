@@ -67,7 +67,8 @@ typedef enum
 {
    Normal,
    Wide,
-   Verbose
+   Verbose,
+   Brief
 } InfoMode;
 
 

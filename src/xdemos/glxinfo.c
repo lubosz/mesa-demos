@@ -26,6 +26,7 @@
  *  -t                     print wide table
  *  -v                     print verbose information
  *  -display DisplayName   specify the X display to interogate
+ *  -B                     brief, print only the basics
  *  -b                     only print ID of "best" visual on screen 0
  *  -i                     use indirect rendering connection only
  *  -l                     print interesting OpenGL limits (added 5 Sep 2002)
@@ -392,7 +393,7 @@ query_renderer(void)
 static Bool
 print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
                   Bool coreProfile, Bool es2Profile, Bool limits,
-                  Bool singleLine, Bool coreWorked)
+                  Bool singleLine, Bool coreWorked, InfoMode mode)
 {
    Window win;
    XSetWindowAttributes attr;
@@ -529,17 +530,19 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
                       "LIBGL_DEBUG=verbose)\n");
             }
          }
-         printf("server glx vendor string: %s\n", serverVendor);
-         printf("server glx version string: %s\n", serverVersion);
-         printf("server glx extensions:\n");
-         print_extension_list(serverExtensions, singleLine);
-         printf("client glx vendor string: %s\n", clientVendor);
-         printf("client glx version string: %s\n", clientVersion);
-         printf("client glx extensions:\n");
-         print_extension_list(clientExtensions, singleLine);
-         printf("GLX version: %u.%u\n", glxVersionMajor, glxVersionMinor);
-         printf("GLX extensions:\n");
-         print_extension_list(glxExtensions, singleLine);
+         if (mode != Brief) {
+            printf("server glx vendor string: %s\n", serverVendor);
+            printf("server glx version string: %s\n", serverVersion);
+            printf("server glx extensions:\n");
+            print_extension_list(serverExtensions, singleLine);
+            printf("client glx vendor string: %s\n", clientVendor);
+            printf("client glx version string: %s\n", clientVersion);
+            printf("client glx extensions:\n");
+            print_extension_list(clientExtensions, singleLine);
+            printf("GLX version: %u.%u\n", glxVersionMajor, glxVersionMinor);
+            printf("GLX extensions:\n");
+            print_extension_list(glxExtensions, singleLine);
+         }
          if (strstr(glxExtensions, "GLX_MESA_query_renderer"))
 	    query_renderer();
          printf("OpenGL vendor string: %s\n", glVendor);
@@ -578,10 +581,10 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
 
       CheckError(__LINE__);
 
-      printf("%s extensions:\n", oglstring);
-      print_extension_list(glExtensions, singleLine);
-
-      CheckError(__LINE__);
+      if (mode != Brief) {
+         printf("%s extensions:\n", oglstring);
+         print_extension_list(glExtensions, singleLine);
+      }
 
       if (limits) {
          print_limits(glExtensions, oglstring, version, &extfuncs);
@@ -1252,17 +1255,21 @@ main(int argc, char *argv[])
          mesa_hack(dpy, scrnum);
          coreWorked = print_screen_info(dpy, scrnum, opts.allowDirect,
                                         True, False, opts.limits,
-                                        opts.singleLine, False);
+                                        opts.singleLine, False, opts.mode);
          print_screen_info(dpy, scrnum, opts.allowDirect, False, False,
-                           opts.limits, opts.singleLine, coreWorked);
+                           opts.limits, opts.singleLine, coreWorked, opts.mode);
          print_screen_info(dpy, scrnum, opts.allowDirect, False, True, False,
-                           opts.singleLine, True);
+                           opts.singleLine, True, opts.mode);
 
          printf("\n");
-         print_visual_info(dpy, scrnum, opts.mode);
+
+         if (opts.mode != Brief) {
+            print_visual_info(dpy, scrnum, opts.mode);
 #ifdef GLX_VERSION_1_3
-         print_fbconfig_info(dpy, scrnum, opts.mode);
+            print_fbconfig_info(dpy, scrnum, opts.mode);
 #endif
+         }
+
          if (scrnum + 1 < numScreens)
             printf("\n\n");
       }

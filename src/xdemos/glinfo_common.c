@@ -733,6 +733,7 @@ usage(void)
    printf("\t-display <dname>: Print GLX visuals on specified server.\n");
    printf("\t-i: Force an indirect rendering context.\n");
 #endif
+   printf("\t-B: brief output, print only the basics.\n");
    printf("\t-v: Print visuals info in verbose form.\n");
    printf("\t-t: Print verbose table.\n");
    printf("\t-h: This information.\n");
@@ -740,7 +741,6 @@ usage(void)
    printf("\t-l: Print interesting OpenGL limits.\n");
    printf("\t-s: Print a single extension per line.\n");
 }
-
 
 void
 parse_args(int argc, char *argv[], struct options *options)
@@ -770,6 +770,9 @@ parse_args(int argc, char *argv[], struct options *options)
       }
       else if (strcmp(argv[i], "-v") == 0) {
          options->mode = Verbose;
+      }
+      else if (strcmp(argv[i], "-B") == 0) {
+         options->mode = Brief;
       }
       else if (strcmp(argv[i], "-b") == 0) {
          options->findBest = GL_TRUE;
