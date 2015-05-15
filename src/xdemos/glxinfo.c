@@ -391,9 +391,10 @@ query_renderer(void)
 
 
 static Bool
-print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
+print_screen_info(Display *dpy, int scrnum,
+                  const struct options *opts,
                   Bool coreProfile, Bool es2Profile, Bool limits,
-                  Bool singleLine, Bool coreWorked, InfoMode mode)
+                  Bool coreWorked)
 {
    Window win;
    XSetWindowAttributes attr;
@@ -414,8 +415,9 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
    fbconfigs = choose_fb_config(dpy, scrnum);
    if (fbconfigs) {
       ctx = create_context_with_config(dpy, fbconfigs[0],
-                                       coreProfile, es2Profile, allowDirect);
-      if (!ctx && allowDirect && !coreProfile) {
+                                       coreProfile, es2Profile,
+                                       opts->allowDirect);
+      if (!ctx && opts->allowDirect && !coreProfile) {
          /* try indirect */
          ctx = create_context_with_config(dpy, fbconfigs[0],
                                           coreProfile, es2Profile, False);
@@ -427,7 +429,7 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
    else if (!coreProfile && !es2Profile) {
       visinfo = choose_xvisinfo(dpy, scrnum);
       if (visinfo)
-	 ctx = glXCreateContext(dpy, visinfo, NULL, allowDirect);
+	 ctx = glXCreateContext(dpy, visinfo, NULL, opts->allowDirect);
    } else
       visinfo = NULL;
 
@@ -519,7 +521,7 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
             printf("Yes\n");
          }
          else {
-            if (!allowDirect) {
+            if (!opts->allowDirect) {
                printf("No (-i specified)\n");
             }
             else if (getenv("LIBGL_ALWAYS_INDIRECT")) {
@@ -530,18 +532,18 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
                       "LIBGL_DEBUG=verbose)\n");
             }
          }
-         if (mode != Brief) {
+         if (opts->mode != Brief) {
             printf("server glx vendor string: %s\n", serverVendor);
             printf("server glx version string: %s\n", serverVersion);
             printf("server glx extensions:\n");
-            print_extension_list(serverExtensions, singleLine);
+            print_extension_list(serverExtensions, opts->singleLine);
             printf("client glx vendor string: %s\n", clientVendor);
             printf("client glx version string: %s\n", clientVersion);
             printf("client glx extensions:\n");
-            print_extension_list(clientExtensions, singleLine);
+            print_extension_list(clientExtensions, opts->singleLine);
             printf("GLX version: %u.%u\n", glxVersionMajor, glxVersionMinor);
             printf("GLX extensions:\n");
-            print_extension_list(glxExtensions, singleLine);
+            print_extension_list(glxExtensions, opts->singleLine);
          }
          if (strstr(glxExtensions, "GLX_MESA_query_renderer"))
 	    query_renderer();
@@ -581,9 +583,9 @@ print_screen_info(Display *dpy, int scrnum, Bool allowDirect,
 
       CheckError(__LINE__);
 
-      if (mode != Brief) {
+      if (opts->mode != Brief) {
          printf("%s extensions:\n", oglstring);
-         print_extension_list(glExtensions, singleLine);
+         print_extension_list(glExtensions, opts->singleLine);
       }
 
       if (limits) {
@@ -1253,13 +1255,11 @@ main(int argc, char *argv[])
       print_display_info(dpy);
       for (scrnum = 0; scrnum < numScreens; scrnum++) {
          mesa_hack(dpy, scrnum);
-         coreWorked = print_screen_info(dpy, scrnum, opts.allowDirect,
-                                        True, False, opts.limits,
-                                        opts.singleLine, False, opts.mode);
-         print_screen_info(dpy, scrnum, opts.allowDirect, False, False,
-                           opts.limits, opts.singleLine, coreWorked, opts.mode);
-         print_screen_info(dpy, scrnum, opts.allowDirect, False, True, False,
-                           opts.singleLine, True, opts.mode);
+         coreWorked = print_screen_info(dpy, scrnum, &opts,
+                                        True, False, opts.limits, False);
+         print_screen_info(dpy, scrnum, &opts, False, False,
+                           opts.limits, coreWorked);
+         print_screen_info(dpy, scrnum, &opts, False, True, False, True);
 
          printf("\n");
 
