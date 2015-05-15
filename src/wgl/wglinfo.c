@@ -79,8 +79,7 @@ WndProc(HWND hWnd,
 
 
 static void
-print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
-                  GLboolean coreProfile, InfoMode mode)
+print_screen_info(HDC _hdc, const struct options *opts, GLboolean coreProfile)
 {
    WNDCLASS wc;
    HWND win;
@@ -253,9 +252,9 @@ print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
        */
 
       if (!coreProfile) {
-         if (wglExtensions && mode != Brief) {
+         if (wglExtensions && opts->mode != Brief) {
             printf("WGL extensions:\n");
-            print_extension_list(wglExtensions, singleLine);
+            print_extension_list(wglExtensions, opts->singleLine);
          }
          printf("OpenGL vendor string: %s\n", glVendor);
          printf("OpenGL renderer string: %s\n", glRenderer);
@@ -286,12 +285,12 @@ print_screen_info(HDC _hdc, GLboolean limits, GLboolean singleLine,
       }
 #endif
 
-      if (mode != Brief) {
+      if (opts->mode != Brief) {
          printf("%s extensions:\n", oglString);
-         print_extension_list(glExtensions, singleLine);
+         print_extension_list(glExtensions, opts->singleLine);
       }
 
-      if (limits) {
+      if (opts->limits) {
          print_limits(glExtensions, oglString, version, &extfuncs);
       }
    }
@@ -646,9 +645,9 @@ main(int argc, char *argv[])
       printf("%d\n", b);
    }
    else {
-      print_screen_info(hdc, opts.limits, opts.singleLine, GL_FALSE, opts.mode);
+      print_screen_info(hdc, &opts, GL_FALSE);
       printf("\n");
-      print_screen_info(hdc, opts.limits, opts.singleLine, GL_TRUE, opts.mode);
+      print_screen_info(hdc, &opts, GL_TRUE);
       printf("\n");
       if (opts.mode != Brief) {
          print_visual_info(hdc, opts.mode);
