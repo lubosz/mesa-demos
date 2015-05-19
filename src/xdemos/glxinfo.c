@@ -468,9 +468,9 @@ print_screen_info(Display *dpy, int scrnum,
       const char *glVendor = (const char *) glGetString(GL_VENDOR);
       const char *glRenderer = (const char *) glGetString(GL_RENDERER);
       const char *glVersion = (const char *) glGetString(GL_VERSION);
-      char *glExtensions;
-      int glxVersionMajor;
-      int glxVersionMinor;
+      char *glExtensions = NULL;
+      int glxVersionMajor = 0;
+      int glxVersionMinor = 0;
       char *displayName = NULL;
       char *colon = NULL, *period = NULL;
       struct ext_functions extfuncs;
@@ -485,20 +485,20 @@ print_screen_info(Display *dpy, int scrnum,
       extfuncs.GetConvolutionParameteriv = (GETCONVOLUTIONPARAMETERIVPROC)
          glXGetProcAddressARB((GLubyte *) "glGetConvolutionParameteriv");
 
-      /* Get list of GL extensions */
-      if (coreProfile) {
-         glExtensions = build_core_profile_extension_list(&extfuncs);
+      if (!glXQueryVersion(dpy, & glxVersionMajor, & glxVersionMinor)) {
+         fprintf(stderr, "Error: glXQueryVersion failed\n");
+         exit(1);
       }
-      else {
+
+      /* Get list of GL extensions */
+      if (coreProfile && extfuncs.GetStringi && glxVersionMajor >= 3)
+         glExtensions = build_core_profile_extension_list(&extfuncs);
+      if (!glExtensions) {
+         coreProfile = False;
          glExtensions = (char *) glGetString(GL_EXTENSIONS);
       }
 
       CheckError(__LINE__);
-
-      if (! glXQueryVersion( dpy, & glxVersionMajor, & glxVersionMinor )) {
-         fprintf(stderr, "Error: glXQueryVersion failed\n");
-         exit(1);
-      }
 
       if (!coreWorked) {
          /* Strip the screen number from the display name, if present. */

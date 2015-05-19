@@ -289,8 +289,12 @@ build_core_profile_extension_list(const struct ext_functions *extfuncs)
    totalLen = 0;
    for (i = 0; i < n; i++) {
       const char *ext = (const char *) extfuncs->GetStringi(GL_EXTENSIONS, i);
-      totalLen += strlen(ext) + 1; /* plus a space */
+      if (ext)
+          totalLen += strlen(ext) + 1; /* plus a space */
    }
+
+   if (!totalLen)
+     return NULL;
 
    buffer = malloc(totalLen + 1);
    if (buffer) {
