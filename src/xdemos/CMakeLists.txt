@@ -70,8 +70,7 @@ target_link_libraries (${subdir}_pbdemo pbutil)
 target_link_libraries (${subdir}_pbinfo pbutil)
 target_link_libraries (${subdir}_sharedtex_mt pthread)
 
-add_executable (corender corender.c ipc.c) 
 add_executable (xrotfontdemo xrotfontdemo.c xuserotfont.c)
 add_executable (glxinfo glxinfo.c glinfo_common.c)
 
-install (TARGETS glxinfo corender xrotfontdemo DESTINATION demos)
+install (TARGETS glxinfo xrotfontdemo DESTINATION demos)
