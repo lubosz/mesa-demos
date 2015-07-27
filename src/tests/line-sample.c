@@ -18,6 +18,9 @@
 static int w, h;
 static float g, lw = 3.0;
 
+static GLboolean Blend = GL_TRUE;
+static GLboolean FlatShade = GL_TRUE;
+
 
 static void
 draw_line_sample(GLboolean smooth, GLboolean stipple, GLfloat width)
@@ -39,7 +42,10 @@ draw_line_sample(GLboolean smooth, GLboolean stipple, GLfloat width)
 
    if (smooth) {
       glEnable(GL_LINE_SMOOTH);
-      glEnable(GL_BLEND);
+      if (Blend)
+         glEnable(GL_BLEND);
+      else
+         glDisable(GL_BLEND);
     }
    else {
       glDisable(GL_LINE_SMOOTH);
@@ -54,7 +60,9 @@ draw_line_sample(GLboolean smooth, GLboolean stipple, GLfloat width)
       float x1 = r1 * cos(i * M_PI / 180.0);
       float y1 = r1 * sin(i * M_PI / 180.0);
 
+      glColor3f(.5, .5, 1);
       glVertex2f(x0, y0);
+      glColor3f(1, 1, 1);
       glVertex2f(x1, y1);
    }
    glEnd();
@@ -98,7 +106,7 @@ Init(void)
    fflush(stdout);
 
    glClearColor(0.0, 0.0, 0.0, 0.0);
-   glShadeModel(GL_FLAT);
+
    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
    /* pattern: |- -- --- ----   | */
    glLineStipple(2, 0x1eed);
@@ -113,7 +121,10 @@ Draw(void)
 {
    int i;
 
+   glClearColor(0.2, 0.2, 0.2, 0.2);
    glClear(GL_COLOR_BUFFER_BIT);
+
+   glShadeModel(FlatShade ? GL_FLAT : GL_SMOOTH);
 
    for (i = 0; i < 2; i++) {
       float width = i ? lw : 1.0;
@@ -154,10 +165,16 @@ Key(unsigned char key, int x, int y)
    else if (key == 'W') {
       lw += g;
    }
+   else if (key == 'f') {
+      FlatShade = !FlatShade;
+   }
+   else if (key == 'b') {
+      Blend = !Blend;
+   }
    if (key == 27)
       exit(0);
 
-   printf("line width %.5f\n", lw);
+   printf("line width %.5f  FlatShade = %d  Blend = %d\n", lw, FlatShade, Blend);
    fflush(stdout);
 
    glutPostRedisplay();
