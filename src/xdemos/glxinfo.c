@@ -491,7 +491,7 @@ print_screen_info(Display *dpy, int scrnum,
       }
 
       /* Get list of GL extensions */
-      if (coreProfile && extfuncs.GetStringi && glxVersionMajor >= 3)
+      if (coreProfile && extfuncs.GetStringi)
          glExtensions = build_core_profile_extension_list(&extfuncs);
       if (!glExtensions) {
          coreProfile = False;
