@@ -93,10 +93,6 @@ PrintConfigs(EGLDisplay d)
          strcat(surfString, "pb,");
       if (surfaces & EGL_PIXMAP_BIT)
          strcat(surfString, "pix,");
-#ifdef EGL_MESA_screen_surface
-      if (surfaces & EGL_SCREEN_BIT_MESA)
-         strcat(surfString, "scrn,");
-#endif
       if (strlen(surfString) > 0)
          surfString[strlen(surfString) - 1] = 0;
 
@@ -116,45 +112,6 @@ PrintConfigs(EGLDisplay d)
    }
 }
 
-
-/**
- * Print table of all available configurations.
- */
-static void
-PrintModes(EGLDisplay d)
-{
-#ifdef EGL_MESA_screen_surface
-   const char *extensions = eglQueryString(d, EGL_EXTENSIONS);
-   if (strstr(extensions, "EGL_MESA_screen_surface")) {
-      EGLScreenMESA screens[MAX_SCREENS];
-      EGLint numScreens = 1, scrn;
-      EGLModeMESA modes[MAX_MODES];
-
-      eglGetScreensMESA(d, screens, MAX_SCREENS, &numScreens);
-      printf("Number of Screens: %d\n\n", numScreens);
-
-      for (scrn = 0; scrn < numScreens; scrn++) {
-         EGLint numModes, i;
-
-         eglGetModesMESA(d, screens[scrn], modes, MAX_MODES, &numModes);
-
-         printf("Screen %d Modes:\n", scrn);
-         printf("  id  width height refresh  name\n");
-         printf("-----------------------------------------\n");
-         for (i = 0; i < numModes; i++) {
-            EGLint id, w, h, r;
-            const char *str;
-            eglGetModeAttribMESA(d, modes[i], EGL_MODE_ID_MESA, &id);
-            eglGetModeAttribMESA(d, modes[i], EGL_WIDTH, &w);
-            eglGetModeAttribMESA(d, modes[i], EGL_HEIGHT, &h);
-            eglGetModeAttribMESA(d, modes[i], EGL_REFRESH_RATE_MESA, &r);
-            str = eglQueryModeStringMESA(d, modes[i]);
-            printf("0x%02x %5d  %5d   %.3f  %s\n", id, w, h, r / 1000.0, str);
-         }
-      }
-   }
-#endif
-}
 
 static void
 PrintExtensions(EGLDisplay d)
@@ -218,8 +175,6 @@ main(int argc, char *argv[])
    PrintExtensions(EGL_NO_DISPLAY);
 
    PrintConfigs(d);
-
-   PrintModes(d);
 
    eglTerminate(d);
 

@@ -12,19 +12,6 @@ link_libraries (
 
 set (subdir egl)
 
-set (targets
-	demo1
-	demo2
-	demo3
-)
-
-foreach (target ${targets})
-	add_executable (${subdir}_${target} ${target}.c)
-	set_target_properties (${subdir}_${target} PROPERTIES OUTPUT_NAME ${target})
-	install (TARGETS ${subdir}_${target} DESTINATION ${subdir})
-endforeach (target)
-
-
 # Targets that can be built both for fullscreen EGL and X11
 
 set (targets
@@ -33,10 +20,6 @@ set (targets
 )
 
 foreach (target ${targets})
-	add_executable (${target}_screen ${target}.c)
-	target_link_libraries (${target}_screen eglut_screen)
-	install (TARGETS ${target}_screen DESTINATION ${subdir})
-
 	if (X11_FOUND)
 		add_executable (${target}_x11 ${target}.c)
 		target_link_libraries (${target}_x11 eglut_x11)

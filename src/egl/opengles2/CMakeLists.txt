@@ -28,10 +28,6 @@ set (targets
 )
 
 foreach (target ${targets})
-	add_executable (${target}_screen ${target}.c)
-	target_link_libraries (${target}_screen eglut_screen ${GLESV2_LIBRARIES})
-	install (TARGETS ${target}_screen DESTINATION ${subdir})
-
 	if (X11_FOUND)
 		add_executable (${target}_x11 ${target}.c)
 		target_link_libraries (${target}_x11 eglut_x11 ${GLESV2_LIBRARIES})

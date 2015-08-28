@@ -30,10 +30,6 @@ foreach (target ${targets})
 		set (sources ${sources} lion-render.c)
 	endif ()
 
-	add_executable (${target}_screen ${sources})
-	target_link_libraries (${target}_screen eglut_screen ${VG_LIBRARIES})
-	install (TARGETS ${target}_screen DESTINATION ${subdir})
-
 	if (X11_FOUND)
 		add_executable (${target}_x11 ${sources})
 		target_link_libraries (${target}_x11 eglut_x11 ${VG_LIBRARIES})

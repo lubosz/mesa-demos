@@ -51,19 +51,11 @@ endif
 
 if HAVE_EGL
 noinst_PROGRAMS = \
-	demo1 \
-	demo2 \
-	demo3 \
 	eglinfo \
-	eglgears_screen \
-	egltri_screen \
 	peglgears \
 	$(EGL_DRM_DEMOS) \
 	$(EGL_X11_DEMOS)
 endif
-
-egltri_screen_SOURCES = egltri.c
-eglgears_screen_SOURCES = eglgears.c
 
 egltri_x11_SOURCES = egltri.c
 eglgears_x11_SOURCES = eglgears.c
@@ -72,9 +64,6 @@ eglgears_x11_LDFLAGS = $(AM_LDFLAGS) $(X11_LIBS)
 egltri_x11_LDFLAGS = $(AM_LDFLAGS) $(X11_LIBS)
 xeglgears_LDFLAGS = $(AM_LDFLAGS) $(X11_LIBS)
 xeglthreads_LDFLAGS = $(AM_LDFLAGS) $(X11_LIBS) -pthread
-
-eglgears_screen_LDADD = ../eglut/libeglut_screen.la
-egltri_screen_LDADD = ../eglut/libeglut_screen.la
 
 eglgears_x11_LDADD = ../eglut/libeglut_x11.la
 egltri_x11_LDADD = ../eglut/libeglut_x11.la
