@@ -55,8 +55,6 @@ DrawRect(const struct rect *r)
 
    glColor3f(1, 1, 1);
 
-   glLineWidth(3.0);
-
    glBegin(GL_LINE_LOOP);
    glVertex2i(r->x0, r->y0);
    glVertex2i(r->x1, r->y0);
@@ -149,6 +147,18 @@ Key(unsigned char key, int x, int y)
    (void) x;
    (void) y;
    switch (key) {
+   case '1':
+      glLineWidth(1);
+      break;
+   case '2':
+      glLineWidth(2);
+      break;
+   case '3':
+      glLineWidth(3);
+      break;
+   case '4':
+      glLineWidth(4);
+      break;
    case 'b':
    case 'B':
       LogicOp = GL_FALSE;
@@ -225,6 +235,7 @@ Init(void)
 
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+   glLineWidth(3);
 }
 
 
