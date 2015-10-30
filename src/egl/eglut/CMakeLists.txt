@@ -9,3 +9,12 @@ if (X11_FOUND)
 		install (TARGETS eglut_x11 DESTINATION ${LIBDIR})
 	endif (BUILD_SHARED_LIBS)
 endif (X11_FOUND)
+
+if(WAYLAND_FOUND)
+	add_library (eglut_wayland eglut.h eglut.c eglutint.h eglut_wayland.c)
+	target_link_libraries (eglut_wayland ${EGL_LIBRARIES} ${WAYLAND_LIBRARIES} ${WAYLAND_EGL_LIBRARIES})
+	if (BUILD_SHARED_LIBS)
+		install (TARGETS eglut_wayland DESTINATION ${LIBDIR})
+	endif (BUILD_SHARED_LIBS)
+endif(WAYLAND_FOUND)
+

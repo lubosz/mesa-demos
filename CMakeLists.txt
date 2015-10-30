@@ -24,6 +24,8 @@ if (PKG_CONFIG_FOUND AND NOT WIN32)
 	pkg_check_modules (GLESV1 glesv1_cm)
 	pkg_check_modules (GLESV2 glesv2)
 	pkg_check_modules (VG vg)
+	pkg_check_modules (WAYLAND wayland-client)
+	pkg_check_modules (WAYLAND_EGL wayland-egl)
 endif ()
 
 # Check for FreeGLUT 2.6 or later
